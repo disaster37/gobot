@@ -45,7 +45,7 @@ type Adaptor struct {
 	Board      firmataBoard
 	conn       io.ReadWriteCloser
 	PortOpener func(port string) (io.ReadWriteCloser, error)
-	InputMode int
+	inputMode int
 	gobot.Eventer
 }
 
@@ -75,7 +75,7 @@ func NewAdaptor(args ...interface{}) *Adaptor {
 		case string:
 			f.port = arg.(string)
 		case int:
-			f.InputMode = arg.(int)
+			f.inputMode = arg.(int)
 		case io.ReadWriteCloser:
 			f.conn = arg.(io.ReadWriteCloser)
 		}
@@ -197,12 +197,12 @@ func (f *Adaptor) DigitalRead(pin string) (val int, err error) {
 		return
 	}
 
-	if f.InputMode != client.Input && f.InputMode != client.InputPullup {
+	if f.inputMode != client.Input && f.inputMode != client.InputPullup {
 		return fmt.Errorf("Mode for input must be 'client.Input' or 'client.InputPullup'")
 	}
 
 	if f.Board.Pins()[p].Mode != mode {
-		if err = f.Board.SetPinMode(p, f.InputMode); err != nil {
+		if err = f.Board.SetPinMode(p, f.inputMode); err != nil {
 			return
 		}
 		if err = f.Board.ReportDigital(p, 1); err != nil {
