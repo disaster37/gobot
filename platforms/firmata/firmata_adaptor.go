@@ -45,6 +45,7 @@ type Adaptor struct {
 	Board      firmataBoard
 	conn       io.ReadWriteCloser
 	PortOpener func(port string) (io.ReadWriteCloser, error)
+	InputMode int
 	gobot.Eventer
 }
 
@@ -73,6 +74,8 @@ func NewAdaptor(args ...interface{}) *Adaptor {
 		switch arg.(type) {
 		case string:
 			f.port = arg.(string)
+		case int:
+			f.InputMode = arg.(int)
 		case io.ReadWriteCloser:
 			f.conn = arg.(io.ReadWriteCloser)
 		}
@@ -188,14 +191,18 @@ func (f *Adaptor) DigitalWrite(pin string, level byte) (err error) {
 
 // DigitalRead retrieves digital value from specified pin.
 // Returns -1 if the response from the board has timed out
-func (f *Adaptor) DigitalRead(pin string, mode int) (val int, err error) {
+func (f *Adaptor) DigitalRead(pin string) (val int, err error) {
 	p, err := strconv.Atoi(pin)
 	if err != nil {
 		return
 	}
 
+	if f.InputMode != client.Input && f.InputMode != client.InputPullup {
+		return fmt.Errorf("Mode for input must be 'client.Input' or 'client.InputPullup'")
+	}
+
 	if f.Board.Pins()[p].Mode != mode {
-		if err = f.Board.SetPinMode(p, mode); err != nil {
+		if err = f.Board.SetPinMode(p, f.InputMode); err != nil {
 			return
 		}
 		if err = f.Board.ReportDigital(p, 1); err != nil {
