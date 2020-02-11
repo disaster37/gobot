@@ -16,11 +16,12 @@ import (
 
 // Pin Modes
 const (
-	Input  = 0x00
-	Output = 0x01
-	Analog = 0x02
-	Pwm    = 0x03
-	Servo  = 0x04
+	Input       = 0x00
+	Output      = 0x01
+	Analog      = 0x02
+	Pwm         = 0x03
+	Servo       = 0x04
+	InputPullup = 0x0B
 )
 
 // Sysex Codes

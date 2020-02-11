@@ -188,14 +188,14 @@ func (f *Adaptor) DigitalWrite(pin string, level byte) (err error) {
 
 // DigitalRead retrieves digital value from specified pin.
 // Returns -1 if the response from the board has timed out
-func (f *Adaptor) DigitalRead(pin string) (val int, err error) {
+func (f *Adaptor) DigitalRead(pin string, mode int) (val int, err error) {
 	p, err := strconv.Atoi(pin)
 	if err != nil {
 		return
 	}
 
-	if f.Board.Pins()[p].Mode != client.Input {
-		if err = f.Board.SetPinMode(p, client.Input); err != nil {
+	if f.Board.Pins()[p].Mode != mode {
+		if err = f.Board.SetPinMode(p, mode); err != nil {
 			return
 		}
 		if err = f.Board.ReportDigital(p, 1); err != nil {
