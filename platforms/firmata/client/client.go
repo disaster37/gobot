@@ -158,7 +158,7 @@ func (b *Client) Pins() []Pin {
 func (b *Client) Connect(conn io.ReadWriteCloser) (err error) {
 	
 	for {
-		err := b.Connect()
+		err := b.Connect(conn)
 		if err != nil {
 			if err != io.EOF {
 				return err
