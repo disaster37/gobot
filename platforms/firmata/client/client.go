@@ -156,6 +156,27 @@ func (b *Client) Pins() []Pin {
 // then continuously polls the firmata board for new information when it's
 // available.
 func (b *Client) Connect(conn io.ReadWriteCloser) (err error) {
+	
+	for {
+		err := b.Connect()
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+
+			// Reconnect
+			err = b.Disconnect()
+			if err != nil {
+				return err
+			}
+			
+		} else {
+			break
+		}
+	}
+}
+
+func (b *Client) connect(conn io.ReadWriteCloser) (err error) {
 	if b.Connected() {
 		return ErrConnected
 	}
@@ -233,6 +254,8 @@ func (b *Client) Connect(conn io.ReadWriteCloser) (err error) {
 			}
 		}
 	}()
+
+	
 
 	return
 }
