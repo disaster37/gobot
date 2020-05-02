@@ -174,6 +174,8 @@ func (b *Client) Connect(conn io.ReadWriteCloser) (err error) {
 			break
 		}
 	}
+
+	return
 }
 
 func (b *Client) connect(conn io.ReadWriteCloser) (err error) {
