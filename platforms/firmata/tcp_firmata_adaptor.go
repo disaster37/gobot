@@ -27,6 +27,22 @@ func connect(address string, timeout time.Duration) (io.ReadWriteCloser, error) 
 	conn.SetKeepAlive(true)
 	conn.SetKeepAlivePeriod(timeout)
 
+	
+
+	go func(){
+		for {
+			_, err := conn.Write(byte[]{0})
+			if err != nil {
+				conn.Close()
+				connTemp, err := net.DialT
+				*conn = *connTemp
+			}
+
+			time.Sleep(1 * time.Millisecond)
+		}
+		
+	}
+
 	return conn, err
 }
 
