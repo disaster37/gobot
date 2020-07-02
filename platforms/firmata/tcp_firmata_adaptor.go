@@ -25,7 +25,7 @@ func connect(address string, timeout time.Duration) (io.ReadWriteCloser, error) 
 		return nil, err
 	}
 	conn.SetKeepAlive(true)
-	conn.SetKeepAlivePeriod(time.Second * 30)
+	conn.SetKeepAlivePeriod(timeout * time.Second)
 
 	return conn, err
 }
@@ -34,7 +34,12 @@ func connect(address string, timeout time.Duration) (io.ReadWriteCloser, error) 
 // WiFiFirmata
 func NewTCPAdaptor(args ...interface{}) *TCPAdaptor {
 	address := args[0].(string)
-	timeout := args[1].(time.Duration)
+	var timeout time.Duration
+	if len(args) > 1 {
+		timeout = args[1].(time.Duration)
+	} else {
+		timeout = 30
+	}
 
 	a := NewAdaptor(address)
 	a.SetName(gobot.DefaultName("TCPFirmata"))
