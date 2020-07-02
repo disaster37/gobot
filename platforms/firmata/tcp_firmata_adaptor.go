@@ -25,7 +25,7 @@ func connect(address string, timeout time.Duration) (io.ReadWriteCloser, error) 
 		return nil, err
 	}
 	conn.SetKeepAlive(true)
-	conn.SetKeepAlivePeriod(timeout * time.Second)
+	conn.SetKeepAlivePeriod(timeout)
 
 	return conn, err
 }
@@ -36,9 +36,9 @@ func NewTCPAdaptor(args ...interface{}) *TCPAdaptor {
 	address := args[0].(string)
 	var timeout time.Duration
 	if len(args) > 1 {
-		timeout = args[1].(time.Duration)
+		timeout = time.Duration(args[1].(int64)) * time.Second
 	} else {
-		timeout = 30
+		timeout = 30 * time.Second
 	}
 
 	a := NewAdaptor(address)
